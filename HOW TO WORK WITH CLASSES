@@ -1,0 +1,27 @@
+#A very absic sample class
+
+class Employee:
+    name="Harry" #class attribute
+    marks=34
+    center="Delhi"
+
+    def printObj(self):
+        print(f"The name is {self.name}")
+
+harry=Employee() #basic object
+harry=Employee() #basic object
+shyam=Employee()  
+Employee.name="HarryNew" #So if we use the CLASS name as for giving instance attribute then IT WILL CHANNGE THE CLASS ATTRIBUTE ALSO BUT IT will NOT change THE INSTANCE ATTRIBUTE GIVEN FOR SHYAM AS SHYAM.NAME
+
+
+#first harry.name (or) shyam.name both will look for any personal attribute available for the object (or) instance attribute that is
+# "shyam.name""Shyaam" then only it goes for class attribute
+
+print(harry.name)
+print(shyam.name)
+shyam.name="Shyaam" #setting an instance attribute 
+print(shyam.name)
+print(harry.name)
+shyam.printObj()
+harry.printObj() #Employee.printObj(harry)
+Employee.printObj(harry)
