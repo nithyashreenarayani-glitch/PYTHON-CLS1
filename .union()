@@ -1,0 +1,15 @@
+# Enter your code here. Read input from STDIN. Print output to STDOUT
+n=int(input())
+n1=set(map(int,input().split()))
+m=int(input())
+m1=set(map(int,input().split()))
+
+Union= n1.union(m1)
+Union=list(Union)
+
+List=[]
+for i in Union:
+    if i not in List:
+        List.append(i)
+        
+print(len(List))                    
