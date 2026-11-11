@@ -1,0 +1,16 @@
+# Enter your code here. Read input from STDIN. Print output to STDOUT
+from collections import deque
+n=int(input())
+d=deque()
+for i in range(n):
+    word=input().split()
+    if word[0] == "append":
+        d.append(word[1])
+    elif word[0]=="appendleft":
+        d.appendleft(word[1])
+    elif word[0]=="pop":
+        d.pop()
+    elif word[0]=="popleft":
+        d.popleft() 
+        
+print(*(d))
