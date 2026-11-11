@@ -1,0 +1,73 @@
+#!/bin/python3
+
+import math
+import os
+import random
+import re
+import sys
+
+def findMinCost(timeAvl, startTime, endTime, cost):
+    n = len(startTime)
+    instances = []
+    for i in range(n):
+        dur = endTime[i] - startTime[i] + 1
+        instances.append((startTime[i], endTime[i], dur, cost[i]))
+        
+    # Sort instances by start time to process as the second instance
+    instances.sort(key=lambda x: x[0])
+    
+    # Also keep instances sorted by end time so we can collect valid non-overlapping first instances
+    by_end = sorted(instances, key=lambda x: x[1])
+    
+    # best_cost_for_duration[d] stores the minimum cost to get a single instance of duration d
+    best_cost_for_duration = [float('inf')] * (timeAvl + 1)
+    
+    ans = float('inf')
+    ptr = 0
+    
+    for current in instances:
+        c_start, c_end, c_dur, c_cost = current
+        
+        # Add all instances whose end time is strictly before the current instance's start time
+        while ptr < len(by_end) and by_end[ptr][1] < c_start:
+            e_start, e_end, e_dur, e_cost = by_end[ptr]
+            if e_dur <= timeAvl:
+                if e_cost < best_cost_for_duration[e_dur]:
+                    best_cost_for_duration[e_dur] = e_cost
+            ptr += 1
+            
+        needed_dur = timeAvl - c_dur
+        if 0 <= needed_dur <= timeAvl:
+            if best_cost_for_duration[needed_dur] != float('inf'):
+                total_cost = best_cost_for_duration[needed_dur] + c_cost
+                if total_cost < ans:
+                    ans = total_cost
+                
+    return ans if ans != float('inf') else -1
+
+if __name__ == '__main__':
+    fptr = open(os.environ['OUTPUT_PATH'], 'w')
+
+    timeAvl = int(input().strip())
+
+    n = int(input().strip())
+
+    startTime = []
+    for _ in range(n):
+        startTime.append(int(input().strip()))
+
+    n_end = int(input().strip())
+    endTime = []
+    for _ in range(n):
+        endTime.append(int(input().strip()))
+
+    n_cost = int(input().strip())
+    cost = []
+    for _ in range(n):
+        cost.append(int(input().strip()))
+
+    result = findMinCost(timeAvl, startTime, endTime, cost)
+
+    fptr.write(str(result) + '\n')
+
+    fptr.close()
