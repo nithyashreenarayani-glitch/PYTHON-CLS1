@@ -1,0 +1,45 @@
+#!/bin/python3
+
+import math
+import os
+import random
+import re
+import sys
+import urllib.request
+import json
+
+# Complete the 'getTemperature' function below.
+#
+# URL for cut and paste
+# https://jsonmock.hackerrank.com/api/weather?name=<name>
+#
+# The function is expected to return an Integer.
+# The function accepts a single parameter name.
+#
+
+def getTemperature(name):
+    # Construct the API URL with the given city name
+    url = f"https://jsonmock.hackerrank.com/api/weather?name={urllib.parse.quote(name)}"
+    
+    # Make the HTTP GET request and read the response
+    with urllib.request.urlopen(url) as response:
+        data = json.loads(response.read().decode())
+    
+    # Extract the first record's weather string (e.g., "12 degree")
+    weather_str = data['data'][0]['weather']
+    
+    # Extract the integer value from the weather string
+    temperature = int(weather_str.split()[0])
+    
+    return temperature
+
+if __name__ == '__main__':
+    fptr = open(os.environ['OUTPUT_PATH'], 'w')
+
+    name = input()
+
+    result = getTemperature(name)
+
+    fptr.write(str(result) + '\n')
+
+    fptr.close()
