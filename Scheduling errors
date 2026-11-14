@@ -1,0 +1,5 @@
+SELECT DISTINCT professor.NAME, course.NAME
+FROM schedule
+JOIN professor ON schedule.PROFESSOR_ID = professor.ID
+JOIN course ON schedule.COURSE_ID = course.ID
+WHERE professor.DEPARTMENT_ID <> course.DEPARTMENT_ID;
