@@ -1,0 +1,125 @@
+#!/bin/python3
+
+import math
+import os
+import random
+import re
+import sys
+
+# Complete the 'maxPresentations' function below.
+#
+# The function is expected to return an INTEGER.
+# The function accepts following parameters:
+#  1. INTEGER_ARRAY scheduleStart
+#  2. INTEGER_ARRAY scheduleEnd
+#
+
+def maxPresentations(scheduleStart, scheduleEnd):
+    # Zip start and end times together into pairs (intervals)
+    presentations = list(zip(scheduleStart, scheduleEnd))
+    
+    # Sort presentations based on their end times (and then start times)
+    presentations.sort(key=lambda x: x[1])
+    
+    count = 0
+    last_end_time = -1
+    
+    for start, end in presentations:
+        # If the presentation starts at or after the last attended one ends
+        if start >= last_end_time:
+            count += 1
+            last_end_time = end  # Update the end time to the current presentation's end
+            
+    return count
+
+if __name__ == '__main__':
+    fptr = open(os.environ['OUTPUT_PATH'], 'w')
+
+    scheduleStart_count = int(input().strip())
+
+    scheduleStart = []
+
+    for _ in range(scheduleStart_count):
+        scheduleStart_item = int(input().strip())
+        scheduleStart.append(scheduleStart_item)
+
+    scheduleEnd_count = int(input().strip())
+
+    scheduleEnd = []
+
+    for _ in range(scheduleEnd_count):
+        scheduleEnd_item = int(input().strip())
+        scheduleEnd.append(scheduleEnd_item)
+
+    result = maxPresentations(scheduleStart, scheduleEnd)
+
+    fptr.write(str(result) + '\n')
+
+    fptr.close()
+
+
+Line-by-Line Explanation & Variable Breakdown
+1. Function Definition
+Python
+def maxPresentations(scheduleStart, scheduleEnd):
+scheduleStart: A list of integers representing the starting time of each presentation (e.g., [1, 1, 2]).
+
+scheduleEnd: A list of integers representing the ending time of each presentation (e.g., [3, 2, 4]).
+
+2. Combining Start and End Times
+Python
+    presentations = list(zip(scheduleStart, scheduleEnd))
+zip(scheduleStart, scheduleEnd): Pairs up each element from scheduleStart with the corresponding element in scheduleEnd by index.
+
+list(...): Converts those paired pairs into a list of tuples.
+
+What presentations contains:
+If scheduleStart = [1, 1, 2] and scheduleEnd = [3, 2, 4], then presentations becomes:[(1, 3), (1, 2), (2, 4)](Each tuple represents (start_time, end_time) for a single presentation).
+
+3. Sorting the Presentations
+Python
+    presentations.sort(key=lambda x: x[1])
+key=lambda x: x[1]: Tells Python's .sort() method to sort the list of tuples based on the element at index 1 of each tuple, which is the end time.
+
+What presentations contains after sorting:[(1, 2), (1, 3), (2, 4)]
+
+Notice how presentation ending at 2 comes first, then 3, then 4. This is the core of the greedy algorithm: finishing early maximizes your options for the next presentation.
+
+4. Initializing Tracking Variables
+Python
+    count = 0
+    last_end_time = -1
+count: An integer tracker that stores how many presentations you have successfully chosen to attend. It starts at 0.
+
+last_end_time: An integer that stores the end time of the last presentation you attended. It is initialized to -1 so that the very first presentation you check will always be able to start at or after -1.
+
+5. The Greedy Selection Loop
+Python
+    for start, end in presentations:
+for start, end in presentations:: Loops through each presentation one by one from our sorted list. In each iteration, unpacking assigns:
+
+start: The start time of the current presentation.
+
+end: The end time of the current presentation.
+
+6. The Overlap Check
+Python
+        if start >= last_end_time:
+if start >= last_end_time:: This is the core decision rule. It checks if the current presentation's start time is greater than or equal to the end time of the last presentation you attended.
+
+If True, there is no time conflict, meaning you are free to attend this presentation.
+
+If False, it means this presentation starts before your previous presentation finished, so you must skip it.
+
+7. Updating Counters and State
+Python
+            count += 1
+            last_end_time = end 
+count += 1: Increments your total attended presentations count by 1.
+
+last_end_time = end: Updates last_end_time to match the end time of this newly attended presentation, so future loop iterations will measure against this new timestamp.
+
+8. Returning the Final Result
+Python
+    return count
+return count: Sends the final maximum number of compatible presentations back to the caller function once all presentations have been evaluated.
